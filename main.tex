@@ -1,0 +1,125 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{mathrsfs} 
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{xparse}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{tikz}
+\usepackage{centernot}
+\setlength{\parskip}{\baselineskip}
+\newcommand{\tb}{\textbf}
+\newcommand{\vspf}{\vspace{1mm}}
+\newcommand{\vs}{\vspace{1mm}}
+\newcommand{\vsss}{\vspace{6mm}}
+\newcommand{\hs}{\hspace{.5mm}}
+\newcommand{\newprob}{\vspace{8mm}}
+\newcommand{\un}{\underline}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\D}{\mathbb{D}}
+\newcommand{\E}{\mathbb{E}}
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\Prob}{\mathbb{P}}
+\newcommand{\G}{\Gamma}
+\newcommand{\pf}{\textit{Proof}: }
+\newcommand{\dis}{\displaystyle}
+\newcommand{\ep}{\epsilon}
+\newcommand{\lam}{\lambda}
+\newcommand{\sub}{\subseteq}
+\newcommand{\al}{\alpha}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Div}{div}
+\DeclareMathOperator{\curl}{curl}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\hcf}{hcf}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\Null}{nullity}
+\DeclareMathOperator{\Span}{Span}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\lamdba}{\lambda}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Int}{int}
+\DeclareMathOperator{\Res}{Res}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{bnd}{Bound}
+
+\newtheorem{result}{Result}[section]
+\newtheorem{lem}[result]{Lemma}
+\newtheorem{rmk}[result]{Remark}
+\newtheorem{cor}[result]{Corollary}
+\newtheorem{red}[result]{Reduction}
+
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+\newtheorem*{con}{Construction}
+
+\DeclareMathOperator{\Solve}{\bm{\mathsf{Solved}}}
+
+\newcommand{\hide}[1]{}
+\newcommand{\edit}[1]{}%\textcolor{red}{#1}}
+\newcommand{\rough}[1]{}%\textbf{\textcolor{blue}{#1}}}
+\definecolor{darkgreen}{RGB}{75,150,75}
+\newcommand{\review}[1]{}%\textcolor{darkgreen}{#1}}
+\newcommand{\dc}[1]{}%\textcolor{orange}{dc: #1}}
+\newcommand{\zh}[1]{}%\textcolor{blue}{zh: #1}}
+\newcommand{\hides}[1]{}%1}
+\newcommand{\pub}[1]{}%\textcolor{purple}{#1}}
+\newcommand{\be}{\beta}
+
+\title{Paper Template}
+\author{Zach Hunter}
+\date{November 2020}
+
+\begin{document}
+
+\maketitle
+
+
+
+
+
+\section{$[n]\times\Z$}
+
+For each $n \ge 2$, does there exist a sequence solving $[n]\times\mathbb{Z}$?
+
+A construction for $n=2$ is in other file. Does it extend to $n \ge 3$?
+
+Does a random sequence work for $[2]\times\Z$? How about for $[n]\times\Z$?
+
+\section{Backtracking random walk}
+
+Step 1: find a probability distribution with a backtracking bias so that it beats the construction in the random paper. 
+
+Step 2: find a (different) construction for these random sequences. 
+
+
+
+
+
+
+
+
+
+\end{document}

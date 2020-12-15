@@ -1,0 +1,287 @@
+\documentclass[a4paper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsfonts}
+\usepackage{amsthm}
+\usepackage{mathrsfs} 
+\usepackage{xcolor}
+\usepackage{hyperref}
+\usepackage{xparse}
+\usepackage{bm}
+\usepackage{bbm}
+\usepackage{tikz}
+\usepackage{centernot}
+\setlength{\parskip}{\baselineskip}
+\DeclareMathOperator{\sign}{sign}
+\DeclareMathOperator{\Div}{div}
+\DeclareMathOperator{\curl}{curl}
+\DeclareMathOperator{\lcm}{lcm}
+\DeclareMathOperator{\hcf}{hcf}
+\DeclareMathOperator{\rank}{rank}
+\DeclareMathOperator{\im}{Im}
+\DeclareMathOperator{\Null}{nullity}
+\DeclareMathOperator{\Span}{Span}
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\Cov}{Cov}
+\DeclareMathOperator{\Log}{Log}
+\DeclareMathOperator{\lamdba}{\lambda}
+\DeclareMathOperator{\Hom}{Hom}
+\DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\Int}{int}
+\DeclareMathOperator{\Res}{Res}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=blue,
+    filecolor=magenta,
+    urlcolor=blue,
+    citecolor=blue
+}
+
+\newtheorem{thm}{Theorem}
+\newtheorem{bnd}{Bound}
+
+\newtheorem{result}{Result}[section]
+\newtheorem{lem}[result]{Lemma}
+\newtheorem{rmk}[result]{Remark}
+\newtheorem{cor}[result]{Corollary}
+\newtheorem{red}[result]{Reduction}
+
+\theoremstyle{definition}
+\newtheorem*{defn}{Definition}
+\newtheorem*{con}{Construction}
+\newtheorem*{que}{Question}
+
+\DeclareMathOperator{\Solve}{\bm{\mathsf{Solved}}}
+
+\newcommand{\hide}[1]{}
+\newcommand{\edit}[1]{}%\textcolor{red}{#1}}
+\newcommand{\rough}[1]{}%\textbf{\textcolor{blue}{#1}}}
+\definecolor{darkgreen}{RGB}{75,150,75}
+\newcommand{\review}[1]{}%\textcolor{darkgreen}{#1}}
+\newcommand{\dc}[1]{}%\textcolor{orange}{dc: #1}}
+\newcommand{\zh}[1]{}%\textcolor{blue}{zh: #1}}
+\newcommand{\hides}[1]{}%1}
+\newcommand{\pub}[1]{}%\textcolor{purple}{#1}}
+
+\newcommand{\al}{\alpha}
+\newcommand{\be}{\beta}
+
+\title{Universal Transversals}
+\author{Zach Hunter}
+\date{November 2020}
+
+\begin{document}
+
+\maketitle
+
+\section{Notation}
+
+We will be using a lot of the notation seen in (https://arxiv.org/pdf/1804.05439.pdf). 
+
+We will use the convention that for an alphabet $\Sigma$, that $\Sigma^* = \bigcup_{n=0}^\infty \Sigma^n$ is the set of all finite words on $\Sigma$, $\Sigma^\omega = \{x:\Bbb{N}\to\Sigma\}$ is the set of infinite word on $\Sigma$ which are indexed by the naturals, and $S^\infty = S^*\cup S^\omega$. For $a \in \Sigma^*, b \in \Sigma^\infty$ will let $a\bigstar b$ denote the concatenation of $a$ and $b$. (although sometimes we will simply write $ab$ instead) Lastly, for $a \in S^*$, we set $a^1 = a$ and then recursively define $a^{i+1} = a^i\bigstar a$.
+
+For a set $S$, an $S$\textit{-maze}, $M$, is a quadruple $(Q,\delta,q_1,q_T)$, consisting of a countable set $Q$, a function $\delta:Q\times S \to Q$, and elements $q_1,q_T \in Q$. We can think of a maze as resembling a deterministic automata on the alphabet $S$, where $q_0$ is the initial state, and $q_T$ is the target state. We say that $M$ is \textit{solved} by a word $a = a_1,\dots \in S^\infty$ iff considering the sequence defined by $r_1 = q_1, r_{i+1} = \delta(r_i,a_i)$, there exists $t\ge 1$ such that $r_t = q_T$. We say a set of $S$-mazes, $\mathcal{F}$, is solved by a word $a \in S^\infty$, if each maze $M\in \mathcal{F}$ is solved by $a$.
+
+\begin{rmk}\label{fstrat} If there exists a countable partition $\mathcal{F} = \bigcup_{i=1}^\infty F_i$ such that for each $i\ge 1$ and each $a \in S^*$, there exists $b=b(a,i) \in S^*$ such that $a \bigstar b$ solves $F_i$, then there exists $A \in S^\infty$ such that $A$ solves $\mathcal{F}$.
+\begin{proof}
+    Let $a_0$ be the empty word, which has finite length. Inductively, given that $a_i$ is finite, we may define $a_{i+1} = a_i \bigstar b(a_i,i)$, which will again be finite as $a_i,b(a_i,i)$ each belong to $S^*$. (respectively due to inductive hypothesis and the assumption of the remark) It also is clear by induction that $a_n$ solves $\bigcup_{i=1}^n F_i$, as it contains $a_{n-1}$ as a prefix. Defining $A$ as the direct limit of $a_n$ it is clear to see that $A$ should have countable length and that $A$ solves $\bigcup_{i=1}^\infty F_i = \mathcal{F}$.
+\end{proof}
+\end{rmk}
+
+We may represent the infinite grid graph as the Cayley graph of $\Bbb{Z}^2$ using the quadruple $(R,L,U,D):=((1,0),(-1,0),(0,1),(0,-1))$ as our generating set. (so geometrically the first coordinate is our $x$-axis and the second is our $y$-axis) We will let $G$ denote this Cayley graph, and set $S=\{R,L,U,D\}$. For a vertex $v \in V(G)$ we will let $x_v$ denote the $x$-coordinate of $v$ and $y_v$ denote the $y$-coordinate of $v$.
+
+For a subgraph $H$ of $G$, and $u,v \in V(H)$, we let $M_{H,u,v} = (Q,\delta,u,v)$ be the $S$-maze where $Q = V(H)$, and for each $s \in S$ and $v \in Q$ we have \[\delta(v,s) = \begin{cases}v+s &\textrm{if $(v,v+s) \in E(H)$}\\v &\textrm{otherwise.}\end{cases}\]
+For a connected subgraph $H$ we say that $a \in S^\infty$ solves $H$ starting at $u \in V(H)$, if $a$ solves $\{M_{H,u,v}:\forall v \in V(H)\}$. Similarly, $a$ solves a set of subgraphs $\mathcal{H}$ starting at $u$ if $a$ solves $\bigcup_{H \in \mathcal{H}}\{M_{H,u,v}:\forall v \in V(H)\}$. For brevity, we may sometimes write $M_{H,v}$ in place of $M_{H,(0,0),v}$.
+
+Sometimes, for a subgraph $H$, a vertex $u \in V(H)$ and $a \in S^*$, we will use $\delta_H(u,a)$ to denote where we end the walk which starts at $v$ and follows the instructions of $a$. (basically if $|a| =n$ then $\delta_H(u,a) = r_{n+1}$, if we use the language from earlier)
+
+\section{\texorpdfstring{Solving subgraphs of $\Bbb{Z}\times \{0,1\}$}{Solving subgraphs of Z x {0,1}}}
+
+We shall prove that there exists $a \in S^\infty$ that solves $\mathcal{H}$ starting at $(0,0)$, where $\mathcal{H}$ is the set of all connected subgraphs $H$ of the induced subgraph $G' := G[ \Bbb{Z}\times \{0,1\}]$ such that $(0,0) \in V(H)$ and for $n \in \Bbb{Z}$, there exist $v_n \in V(H)$ such that $x_{v_n} = n$. The methods outlined should work in general, but are noticably messier when we account for $H$ such that there projection onto the $x$-axis is like a ray. As this is supposed to be a quick sketch to inform you, I've decided to omit the general case as it was taking to long and becoming quite illegible.
+
+We will find the following definitions useful.
+\begin{defn} For $n\le m\in \Bbb{Z}$ and $H \in\mathcal{H}$, let $H' = H_{n,m}$ be the maximal subgraph of $H$ such that $(x,y) \in V(H')\implies x \in [n,m]$.
+\end{defn}
+\begin{defn} For a graph $H$, let $d_H(u,v)$ be the minimum number of edges required to make a path in $H$ from $u$ to $v$. Here, we use the convention that $d_H(u,v)$ if $u,v$ are not connected in $H$, or either do not belong to $V(H)$.
+\end{defn}
+
+At a  high level, our process consists of first going arbitrarily far to the right, and then going arbitrarily far to the left, being particularly careful not miss vertices at a specified height $i \in \{0,1\}$ as we travel back to the left. More precisely, we prove the following.
+\begin{lem}\label{rough moving}
+    Given $N> 0$, there exists a finite word $a = a(N) \in S^*$ such that for any $H \in \mathcal{H}$ and $u \in V(H)$, we have $\delta_H(u,a) = (x,y)$ where $x_v > x \implies d_H(u,v)> N$.
+\end{lem}
+\begin{lem}\label{fine moving}
+    Given $y\in\{0,1\}$ and an integer $k \ge 0$, there exists a finite word $a= a(y,k) \in S^*$ such that for any $H \in \mathcal{H},n \in \Bbb{Z}$, if $u,v$ are connected in $H_{n,n+k}$, $y_v = y$, and $x_u\ge x_v$, then $a$ solves $M_{H,u,v}$. 
+\end{lem}
+Assuming this, we get our main result as follows. 
+
+\begin{thm} There exists $A \in S^\infty$ such that $A$ solves $\mathcal{H}$ starting at $(0,0)$.
+\begin{proof}
+    We wish to use Remark~\ref{fstrat}. In particular, we may partition $\mathcal{F} = \bigcup_{H \in \mathcal{H}}\{M_{H,v}:\forall v \in V(H)\}$ into the sets $F_{i,j} = \{M_{H,v}: d_H((0,0),v) = i\,y_v = j\}$ with the integers $i \ge 0$ and $j \in \{0,1\}$.\footnote{It is clear that $d_H$ is non-negative and integer-valued when $u,v$ are connected in $H$. (if they are connected, there is a walk $w_0,\dots$ along $H$ enumerated by the naturals such that $w_0 = u$ and $w_n = v$ for some $n$, in which case $d_H(u,v) \le n$) Meanwhile, by definition of $\mathcal{H}$, $H \in \mathcal{H}$ implies that $H$ is connected and contains $(0,0)$ in its vertex set, thus $v \in V(H) \implies d_H((0,0),v)<\infty$.} We set $X_{i,j} = \{(H,v): M_{H,v} \in F_{i,j}\}$ and remark that this partition is clearly countable.
+    
+    Now, given $a \in S^*$, we wish to show that there exists $b=b(a,(i,j))$ such that $a\bigstar b$ solves $F_{i,j}$. For each $H$, we set $u_0= u_0(H) = \delta_H((0,0),a)$. If $|a| = n$, then we take $N = n+i$ and note that by triangle-inequality we get \[d_H(u_0,v) =d_H(\delta_H((0,0),a),v)\le d_H(\delta_H((0,0),a),(0,0)) + d_H((0,0),v) \le n +i \]for all $(H,v) \in X_{i,j}$. (this is clear as for each letter in $a$, our distance increases by at most 1) It follows by Lemma~\ref{rough moving} that there exists some $b_1 \in S^*$ such that for all $H$, we get \begin{align*}
+        \delta_H(a\bigstar b_1,(0,0)) = \delta_H(u_0,b_1) = u_1\textrm{ where }x_{u_1} &\ge \max_{v\in V(H): d_H(u_0,v)\le N}\{x_v\} \\&\ge  \max_{v\in \in X_{i,j}} \{x_v\}.\tag{1a}\\
+    \end{align*}
+    
+    Next, for each $H$, we set $u_1 = u_1(H) =\delta_H((0,0),a\bigstar b_0)$. Again applying triangle inequality we get that for all $(H,v) \in X_{i,j}$, that $d(u_1,v) \le |a\bigstar b_1| +i =: D$ for some finite $D\ge 0$, as both $a$ and $b_1$ are finite. It is clear that for any $H$, all paths of length $\ell$ starting at $u_1$ are contained in $H_{x_{u_1}-\ell,x_{u_1}+\ell}$. It then follows that for each $(H,v) \in X_{i,j}$ that $u_1$ and $v$ are connected in $H_{x_{u_1}-D,x_{u_1}+D}$. Meanwhile, by $(1a)$, we also have that for $(H,v) \in X_{i,j}$ that $x_{u_1} \ge x_v$. Lastly, we observe that $(H,v) \in X_{i,j} \implies y_v = j$. 
+    Hence, by Lemma~\ref{fine moving}, taking $y = j$, $n = x_{u_1}-D\le m = x_{u_1}+D$ we have that there exists a finite $b_2 \in S^*$ $d_H(u_1,v)$ which will solve $M_{H,u_1,v}$ for each $(H,v) \in X'_{i,j}$. It follows that $a \bigstar b_1\bigstar b_2$ solves $F_{i,j}$ as desired, with $b_1\bigstar b_2$ being finite. Hence, by Remark~\ref{fstrat}, we are done.
+\end{proof}
+\end{thm}
+
+I'm afraid I have not proven my lemmas in a way which is very pleasant to read. In Lemma~\ref*{rough moving}, we prove that we may recursively take $a(1) = R, a(N+1) a(N)^{16N+14M+10}U(LU)^{M+N}R^{2M+2N+1}D (LD)^{M+N}R^{M+N+1}$, where $M= |a(N)|$. In Lemma~\ref*{fine moving}, we prove that we may take $a(1,k) = R^k(UL)^{2k+1}R^{2k+1}L^{4k+1}B_{2k}(k)$, where $b_i = R^iD(LU)^{2k}R^{2k}L^{2k}$ and $B_0(k) = b_0^{2k}, B_{i+1}(k) = (B_i(k)b_{i+1})^{2k}$. Swapping the instances of $U$ and $D$ which appear in $a(1,k)$, we get $a(0,k)$.
+
+
+\begin{proof}[Proof of Lemma~\ref*{rough moving}]
+    We proceed by induction. Our inductive hypothesis is this: for each $N\ge 1$, there exists a finite word $a = a(N) \in S^*$ such that for all $H\in \mathcal{H}$, and any $u \in V(H)$, we have that $x_v > x_{\delta_H(u,a)} \implies d_H(u,v) > N$.
+    
+    
+    For $N = 1$, we have that $a(1) = R$ suffices. Now, given that there exists $a = a(N)$ satisfying our inductive hypothesis for the case of $N$, we wish to show this extends to the case of $N+1$.
+    
+    We set $a = a(N)$, $M = |a|$. We intend to show that we may take $a(N+1)$ to be $A:= a^{16N+14M+10}U(LU)^{M+N}R^{2M+2N+1}D (LD)^{M+N}R^{M+N+1}$. We make some choice of $H\in \mathcal{H},u \in V(H)$. 
+    
+    We shall consider the quantities $\Delta_i := x_{\delta_H(u,a^{i+1})}-x_{\delta_H(u,a^i)}$ for $0\le i < 16N+14M+10$. By triangle inequality and the fact that each $s \in S$ can only change the $x$-coordinate by at most $1$, we get that the $x$-coordinate of $\delta_H(u,A)$, $x'$, is bounded like so:
+    \begin{align*} x' &\ge x_u + \sum_{i=0}^{16N+14M+9} \Delta_i - |U(LU)^{M+N}R^{2M+2N+1}D (LD)^{M+N}R^{M+N+1}| \\&= x_u+\sum_{i=0}^{16N+14M+9} \Delta_i -7N-7M-4.\\\end{align*}
+    
+    Case 1: $\sum_{i=0}^{16N+14M+9}\Delta_i \ge 8N+7M+5$
+    
+    It then follows that $x' \ge x_u+N+1$. We are then immediately done, by the simple upper bound that $d_H(u,v) \ge |x_u-x_v|+|y_u-y_v|$, as then we have $x_v > x'\implies d_H(u,v)\ge 1+x'-x_u \ge N+2> N+1$ as desired.
+    
+    Case 2: $\sum_{i=0}^{16N+14M+9}\Delta_i \le 8N+7M+4$
+    
+    We first note that $\Delta_i$ are all non-negative, by our inductive hypothesis.\footnote{We may write $\delta_H(u,a^{i+1}) = \delta_H(\delta_H(u,a^i),a(N))$, thus as the distance from $\delta_H(u,a^i)$ to itself is zero, which is clearly less than $N$, we get that $x$-coordinate of $\delta_H(u,a^{i+1})$ cannot be less than the $x$-coordinate of $\delta_H(u,a^i)$} We moreover note that $\Delta_i=0$ can only occur when $\delta_H(u,a^i)$ does not have an edge which takes us further to the right, as that would imply $d_H(\delta_H(u,a^i), \delta_H(u,a^i)+R) = 1\le N$ and then by definition of $a(N)$ we would get $x_{\delta_H(u,a^{i+1})} \ge x_{\delta_H(u,a^i)+R} = x_{\delta_H(u,a^i)}+1\implies \Delta_i \ge 1$.
+    
+    It then follows by pigeonhole principal that there must exist some $0\le j<8N+7M+5$ such that $\Delta_{2j}+\Delta_{2j+1} =0$ and thus $(\delta_H(u,a^{2j}),\delta_H(u,a^{2j+1}),\delta_H(u,a^{2j+2}))$ all share the same $x$-coordinate, $x^*$. Applying pigeonhole principal again, since $H$ has at most two vertices with $x^*$ as their $x$-coordinate, we must have that at least two of $(\delta_H(u,a^{2j}),\delta_H(u,a^{2j+1}),\delta_H(u,a^{2j+2}))$ are the same vertex. It then follows that the sequence must be periodic, with period at most 2, meaning $\delta_H(u,a^{2j+2q+r}) = \delta_H(u,a^{2j+r})$ for all $q \ge 0$, $r\in \{0,1\}$.
+    
+    We next refine this observation. By definition of $\mathcal{H}$, we have that $H$ must extend infinitely far to the right, at least one of $(x^*,0),(x^*,1)$ must have an edge which takes us further to the right. Recalling what we noted two paragraphs ago, both of $\delta_H(u,a^{2j}),\delta_H(u,a^{2j+1})$ cannot have an edge to the right, thus they cannot be distinct as they both have $x^*$ as their $x$-coordinate. Hence, we must have that $\delta_H(u,a^{2j})$ is a fixed point, such that $\delta_H(u,a^{2j}) = \delta_H(\delta_H(u,a^{2j}),a)$. (which of course implies that $\delta_H(u,a^{16N+14M+10}) = \delta_H(u,a^{2j})$ as $2j<16N+14M+10$ and we will be stuck at this fixed point)
+    
+    We now analyze the scenario further, to deduce that the expected properties of $a(N+1)$ shall hold for $A$ in Case 2, as desired. 
+    
+    As we have observed above, assuming Case 2 is true, we may choose $0\le j < 16N+14M+10$ such that $\delta_H(u,a^{2j})$ is a fixed point and $\delta_H(u,a^{16N+14M+10}) = \delta_H(u,a^{2j})$. We set $(x^*,y^*) = \delta_H(u,a^{2j})$. Since $(x^*,y^*)$ is fixed under $a(N)$, we must have that $(x^*,y^*)$ does not have an edge taking it further to the right. Since $H$ is connected and extends infinitely far to the right, we must have that $(x^*,1-y^*)$ has edge to its right, and thus $(x^*+1,1-y^*) \in V(H) $. We set $v = (x^*+1,1-y^*)$.
+    
+    The rest of the argument is essentially the following: 
+    \begin{itemize}
+        \item We consider the walk $(w_0\dots w_{7N+7M+4})$, with $w_i = \delta_H((x^*,y^*),\alpha_i)$, where $\alpha_i$ is the prefix of $U(LU)^{M+N}R^{2M+2N+1}D (LD)^{M+N}R^{M+N+1}$ having only $i$ letters.
+        \item We note that either our $y$-coordinate never changes in our walk, or we reach $v$ at some point in our walk.
+        \item In the first case, we deduce that we must also have that $\delta_H(u,A) = \delta_H(u,a^{2j})$ and $d_H(u,v) > N+1$. By the first additional deduction, we get that $x_{\delta_H(u,A)}=x^*$. Meanwhile, it is not hard to see that $x_{v'}\ge x_v =x^*+1\implies d_H(u,v') = d_H(u,v) + d_H(v,v') >N+1$, and so the desired property will hold.  
+        \item In the second case, once we first reach $v$ in our walk, we can further observe that our $x$-coordinate will never less than $x_v$ for the rest of the walk. It then follows that $x_{\delta_H(u,a)} \ge x^*+1$. By definition of $a(N)$, and basic induction, we see that $x_{v'} > x^* \implies d_H(\delta_H(u,a^{2j}),v') > N \implies d_H(u,v') > N$, hence $x_{v'} > x^*+1 \implies d_H(u,v') > N+1$, and the desired property again holds. 
+    \end{itemize}
+    
+    Most of this is straightforward geometric intuition. Only difficult claim is the second deduction in the third bullet point. That part breaks into to subcases. If $x^*-x_u\ge N+1$, then we immediately get $d_H(u,v) \ge x^*+1-x_u > N+1$, and the claim follows. Next we consider if $x^*-x_u < N+1$. We outline the argument for $y^*=0$
+    
+    
+    Since $(x^*,y^*)$ does not have an edge to its right, there must exist a unique, minimal path $p$ from itself to $v$; furthermore, the walk associated with $p$ must be encoded by a sequence of actions of the form $L^kUR^{k+1}$ for some $k\ge 0$.\footnote{As $H$ is connected, a minimal walk between the vertices must exist. We then claim that any minimal walk must be of the form $L^kUR^{k+1}$ for some non-negative $k$. Initially we have $y$-coordinate 0 and cannot take an edge downwards or rightwards. If we go left our $y$-coordinate is still 0, since we do not backtrack in a minimal walk we shall not head right, and we still cannot go down, and thus we are in the same situation as before. Eventually we will go up, and reach $y$-coordinate 1, after which point it will only make sense to go right.} (a walk $v_0,\dots ,v_n$ is encoded by a sequence of actions $s_1,\dots s_n \in S^*$ if $v_{i} = \delta_H(v_{i-1},s_i)$ for $1\le i\le n$) 
+    
+    It is clear from the encoding that $V(p) = \{v\} \cup \{(x,y):k\le x^*-x\ge 0, y\in \{0,1\}\}$. Next, if $k > N\ge x^*-x_u$, then we have $u\in V(p)$, and so there must be a unique minimal path $p'$ connecting $(x^*,y^*)$ and $u$, which is obtained by taking a subgraph of $p$.
+    
+    If the $y$-coordinate of walk never changes, then we must have $k> N+M$. Assuming $k> N+M$, we shall show that $y_u = y^* = 0$. We suppose the contrary, namely $y_u = 1-y^*$, and shall obtain a contradiction. First, we observe that then $d_H((x^*,y^*),u) > 2M+N+1>|a| \implies \delta_H(u,a) \neq (x^*,y^*)$. At the same time, we will get $d_H((x^*,1-y^*),u) = x^*-x_u \le N$, immediately implying that the $x$-coordinate of $\delta_H(u,a)$ is at least $x^*$. If the $x$-coordinate is exactly $x^*$, then we must have $\delta_H(u,a) = (x^*,1-y^*)$ by our first observation. Since $(x^*,1-y^*)$ has an edge to its right, it would follow that $\Delta_1 \ge 1$, and thus $x_{\delta_H(u,a^2)}> x^*$ at which point it would be impossible to reach the fixed point $(x^*,y^*)$, further iterations of $a(N)$ will never decrease the $x$-coordinate. Similarly, if the coordinate $\delta_H(u,a)$ is greater than $x^*$ then we immediately get that $\delta_H(u,a^{2j})= (x^*,y^*)$ cannot occur, again giving a contradiction. Hence $y_u = y^*$ must hold. 
+    
+    We then quickly get that $d_H(u,v) = |p|-|p'| \ge 2M+N > N+1$ as desired. Writing $L^kDR^{k+1}$ in place of $L^kUR^{k+1}$, the proof for when $y^* =1$ should also follow.
+    
+    \hide{
+    We now consider 3 subcases.
+    
+    Subcase 2.1: $x^*-x_u <N+1$, $y^* = 0$
+    
+    Since $(x^*,y^*)$ does not have an edge to its right, there must exist a unique, minimal path $p$ from itself to $v$; furthermore, the walk associated with $p$ must be encoded by a sequence of actions of the form $L^kUR^{k+1}$ for some $k\ge 0$.\footnote{As $H$ is connected, a minimal walk between the vertices must exist. We then claim that any minimal walk must be of the form $L^kUR^{k+1}$ for some non-negative $k$. Initially we have $y$-coordinate 0 and cannot take an edge downwards or rightwards. If we go left our $y$-coordinate is still 0, since we do not backtrack in a minimal walk we shall not head right, and we still cannot go down, and thus we are in the same situation as before. Eventually we will go up, and reach $y$-coordinate 1, after which point it will only make sense to go right.} (a walk $v_0,\dots ,v_n$ is encoded by a sequence of actions $s_1,\dots s_n \in S^*$ if $v_{i} = \delta_H(v_{i-1},s_i)$ for $1\le i\le n$) 
+    
+    It is clear from the encoding that $V(p) = \{v\} \cup \{(x,y):k\le x^*-x\ge 0, y\in \{0,1\}\}$. Next, if $k > N\ge x^*-x_u$, then we have $u\in V(p)$, and so there must be a unique minimal path $p'$ connecting $(x^*,y^*)$ and $u$, which is obtained by taking a subgraph of $p$.
+    
+    Subsubcase 2.1.1: If $k> N+M$, it quickly follows that $y_u = y^* = 0$. We suppose the contrary, namely $y_u = 1-y^*$, and shall obtain a contradiction. First, we observe that then $d_H((x^*,y^*),u) > 2M+N+1>|a| \implies \delta_H(u,a) \neq (x^*,y^*)$. At the same time, we will get $d_H((x^*,1-y^*),u) = x^*-x_u \le N$, immediately implying that the $x$-coordinate of $\delta_H(u,a)$ is at least $x^*$. If the $x$-coordinate is exactly $x^*$, then we must have $\delta_H(u,a) = (x^*,1-y^*)$ by our first observation. Since $(x^*,1-y^*)$ has an edge to its right, it would follow that $\Delta_1 \ge 1$, and thus $x_{\delta_H(u,a^2)}> x^*$ at which point it would be impossible to reach the fixed point $(x^*,y^*)$, further iterations of $a(N)$ will never decrease the $x$-coordinate. Similarly, if the coordinate $\delta_H(u,a)$ is greater than $x^*$ then we immediately get that $\delta_H(u,a^{2j})= (x^*,y^*)$ cannot occur, again giving a contradiction. Hence $y_u = y^*$ must hold.
+    
+    And so, we get that
+    
+
+    Subcase 2.3: $x^*-x_u\ge N+1$
+    }
+ 
+\end{proof}
+
+\begin{proof}[Proof of Lemma~\ref*{fine moving}]
+    We will demonstrate the case where we take $y = 1$. Swapping the uses of $U$ and $D$, this will in turn hand the case where $y=0$.
+    
+    We let $T= T(H) = \{x: ((x,0),(x,1)) \in E(H)\}$ be the set $x$-coordinates of vertical edges in $H$. We respectively define the \textit{upper} and \textit{lower} subgraphs of $H$ to denote $H[\Bbb{Z}\times \{1\}]$ and $H[\Bbb{Z}\times \{0\}]$. (the subgraphs induced by only considering the vertices with $y$-coordinate 1 and 0 respectively) We next refer to the disjoint union of the upper and lower subgraphs, as the \textit{horizontal subgraph} of $H$. Whenever we will refer to a connected component, we will me a maximal connected component. So in the natural way, a (upper/lower/horizontal) component of $H$ is maximal connected component in the corresponding subgraph of $H$.
+    
+    We consider an instance $H,u,n$. We set $m=n+k$. We shall construct a word $a$ in parts, independent of $H,u,n$, and show show that for all $v$ such that $y_v = 1, x_v\le x_u$ where $u,v$ are connected in $H_{n,m}$ that $a$ solves $M_{H,u,v}$.
+    
+    We set $u_0 = u$. We start with $a_1 = R^k(UL)^{2k+1}, u_1 = \delta_H(u_0,a_1)$. If $y_{u_0}= 1$, then it is clear that $y_{u_1} = 1$, without us even leaving the horizontal component we started in. It thusly follows here that any vertex with $y$-coordinate 1 which is to the left of $u_0$ either belong to the upper component of $u_1$, or is to the left of $u_1$. Meanwhile, if $y_{u_0} = 0$, we have two cases. 
+    
+    If $y_{u_1} =0$, then we never went upwards, in which case we will have $T\cap [x_{\delta_H(u_0,L^k)},x_{\delta_H(u_0,R^k)}] = \{\}$.\footnote{Since we never went upwards, we have that $\delta_H(u_0,R^k(UL)^{2k+1}) = \delta_H(u_0,R^kL^{2k+1}) $. This also gives us the knowledge that $x_{\delta_H(u_0,R^kL^i)} \not \in T$ for $0\le i < 2k+1$. Hence, noting $\{x_{\delta_H(u_0,R^kL^i)}: 0\le i<2k+1\} \supset \{x_{\delta_H(u_0,R^j)}: 0\le j \le k\}\cup \{x_{\delta_H(u_0,L^i)}: 0< i \le k\}$, the result follows.}\hide{\footnote{Since we never went upwards, we have that $\delta_H(u_0,R^k(UL)^k) = \delta(u_0,R^kL^k)$. This also gives us the knowledge that $x_{\delta_H(u_0,R^kL^i)} \not \in T$ for $0\le i \le k-1$. If $x_{\delta_H(u_0,R^k)}-x_{\delta(u_0,R^kL^k)}<k$ then in the horizontal subgraph of $H$, the connected that $u_0$ belongs to is a path $p$ with less than $k$ edges. It would then follow that the set of $\{\delta(u_0,R^kL^i):0\le i \le k-1\} $ visits each $x$-coordinate of $p$. As each of these $x$-coordinates cannot have a vertical edge, we have that $H=p$ as $H$ is connected. In this case, as $H$ is a horizontal path we clearly have $T=\{\}$. Otherwise, we have $x_{\delta_H(u_0,R^k)}-x_{\delta(u_0,R^kL^k)}=k$ and thus $x_{\delta(u_0,R^kL^i)} = x_{u_1}+k-i$ for $0\le i \le k-1$ and the claim also follows.}} Noting the lower component of $u_0$ in $H_{n,m}$ cannot have any vertices whose $x$-coordinate do not belong to the interval $[x_{\delta_H(u_0,L^k)},x_{\delta_H(u_0,R^k)}]$, we see that in this case $u_0$ is not connected to any vertices with $y$-coordinate 1 in $H_{n.m}$, and thus there is nothing left to consider.
+    
+    Otherwise, $y_{u_1} = 1$. Hear we claim that any vertex with $y$-coordinate 1 which is to the left of $u_0$ either belong to the upper component of $u_1$, is to the left of $u_1$, or is not connected to $u_0$ in $H_{n,m}$. To see this, consider the $x$-coordinate where we changed $y$-coordinates in our walk, $x'$. If $x' \ge x_{u_0}$, our claim is quite clear, as the coordinates of the upper connected components are non-overlapping intervals. If $x' > $
+    
+    So in Case 1 and 3, the only cases where we must consider further, we have that $x_{u_0}-2k-1 \le x_{u_1} \le x_{u_0}+k, y_{u_1}$. We take $a_2 = R^{2k+1}L^{4k+1}$ and $u_2 = \delta_H(u_1,a_2)$. We observe that the walk along $H$ starting at $u_1$ and induced by $a_2$ either visits all vertices in the upper component of $u_1$, or at least all those which belong to $H_{n,m}$. Furthermore, we note that either $x_{u_2}\le n\ge x_{u_1}-k$, in which case, we are done, as we visited all vertices in the upper component of $u_1$ which belongs to $H_{n,m}$, and there are no other vertices with $y$-coordinate 1 in $H_{n,m}$ to the left of $u_2$. Otherwise, we must have that $u_2$ does not have an edge to its left and that $x_{u_2} \le x_{u_1}\le x_{u_0}+k\le m+k\le n+2k$. (in fact, more accurately, in this case we can (and should) observe that $\inf\{x\in T: x\ge x_{u_2}\}\le n+2k$)
+    
+    We next define $b_i = R^iD(LU)^{2k}R^{2k}L^{2k}$ for $0\le i< 2k$. We note that if we start at the left-most vertex of an upper component of $H_{n,n+2k}$, $u'$, that if $\inf\{x\in T: x\ge x_{u'}\} = x_{u'}+ j$, then $i< j \implies \delta_H(u',b_i) = u'$. Meanwhile, considering the walk starting at $u'$ induced by $b_j$, we observe the following. 
+    
+    Applying $R^jD$ to $u'$, we will just have used the closest vertical edge to the right of $u'$, precisely at $\inf\{x\in T: x\ge x_{u'}\}$, leaving us at $(x_{u'}+j,0) := u''$. If the connected component of $u'$ in $H_{n,n+2k}$ is not equal to the horizontal component of $u'$ in $H_{n,n+2k}$, then $u''$ will still be inside $H_{n,n+2k}$. Applying $(LU)^{2k}$ to $u''$, there are two cases. If $T\cap [x_{u''}-2k,x_{u''}) = \{\}$, then there are no upper components to the left of $u'$ which are connected to $u'$ in $H_{n,n+2k}$. Otherwise, we have that $\sup\{x\in T: x< x_{u'}+j\} = x_{u''}-j'<x_{u'}$ for some $0<j'\le 2k$. ($\sup\{x\in T: x< x_{u'}+j\}<x_{u'}$ follows from the definition of $j$) We then have that applying $(LU)^{j'}$ to $u''$, we will end up at $(x_{u''}-j',1):=u'''$, ending up at the next closest upper component to the left of $u'$. Applying the rest of $(LU)^{j'}$ to $u'''$ in the second case, we will not leave the upper component of $u'''$ and will now be at $u^4$, where $x_{u^4}\ge x_{u'}-2k$. Lastly, if we then apply $R^{2k}$ to $u^4$, we will have explored sufficiently far to the right of $u^4$ in its upper component, and then applying $L^{2k}$, we will have explored sufficiently far to the left in our upper component. (at which point, we will have explored all vertices in the upper component of $u^4$ in $H_{n,n+2k}$, and either end at the left-most vertex of an upper component of $H_{n,n+2k}$, or have gone further left of $H_{n,n_2k}$)
+    
+    Some looser intuition is, when $i=j$, then the walk induced by $b_i$ goes right until it reaches a vertical edge. Next, then it goes to the left until either its $x$-coordinate drops below $n$, (at which point we no longer care), or until it reaches a vertical, at which point it will go up. It then will sufficiently explore this new upper component, visiting all vertices of the component which also belong to $H_{n,n+2k}$, and then will end at the left-most vertex of the upper component, or no be in $H_{n,n_2k}$, at which point we shouldn't care.
+    
+    We then define $B_0(k) = b_0^{2k}, B_{i+1}(k) = (B_i(k)b_{i+1})^{2k}$, and shall take $a_3 = B_{2k}(k)$. The intuition behind the strategy is that, supposing we are at a vertex $u'$ that is left-most in its upper component, and $j=\inf\{x\in T: x\ge x_{u'}\}-x_{u'}$. Each time we apply $b_i$, with $i < j$, nothing changes; we call such instances neutral applications. Meanwhile, if we apply $b_j$, we will end up at some new vertex, $u^*$, not missing any vertices with $y$-coordinate 1 that are connected to $u'$ in $H_{n,n+2k}$ along the way. And further more, we will have $x_{u^*}<x_{u'}$. We will call such instances successful applications. The only case we did not analyze is when $i > j$, which we call mysterious applications. This case is not so troublesome, but $B_{2k}(k)$ allows us to totally avoid it, because if we manage to achieve $2k$ success applications before our first mysterious application, we are done, as we have gone $2k$ spaces to the left, and thus fully explored $H_{n,n+2k}$.
+    
+    It suffices to take $a(1,k) = a_1\bigstar a_2\bigstar a_3$. 
+\end{proof}
+
+\newpage
+
+\section{General Case}
+
+Now, let $\mathcal{H}'$ be the set of all connected subgraphs $H$ of $G' = G[ \Bbb{Z}\times \{0,1\}]$ such that $(0,0) \in V(H)$.
+
+In the general case, we graphs where this holds: $\min_{v \in V(H): y_v = 1} \{x_v\} = 1+\min_{v \in V(H): y_v = 0} \{x_v\}$.  Because of this, I believe we must weaken Lemma~\ref{rough moving} as follows.
+\begin{lem}\label{rough moving v2}
+    Given $N> 0$, there exists a finite word $a = a(N) \in S^*$ such that for any $H \in \mathcal{H}$ and $u \in V(H)$, we have $\delta_H(u,a) = (x,y)$ where $x' > x \implies d_H(u,(x',y'))> N$ or $a$ solves $M_{H,u,(x',y')}$.
+\end{lem}I'm quite confident this is true but proving it through induction is an utter mess. See Section~\ref{cs}, for what I believe is the precise inductive hypothesis needed.
+
+We then can prove the general theorem:
+\begin{thm} There exists $A \in S^\infty$ such that $A$ solves $\mathcal{H}'$ starting at $(0,0)$.
+\begin{proof}
+    We wish to use Remark~\ref{fstrat}. In particular, we may partition $\mathcal{F} = \bigcup_{H \in \mathcal{H}'}\{M_{H,v}:\forall v \in V(H)\}$ into the sets $F_{i,j} = \{M_{H,v}: d_H((0,0),v) = i\,y_v = j\}$ with the integers $i \ge 0$ and $j \in \{0,1\}$. We set $X_{i,j} = \{(H,v): M_{H,v} \in F_{i,j}\}$ and remark that this partition is clearly countable.
+    
+    Now, given $a \in S^*$, we wish to show that there exists $b=b(a,(i,j))$ such that $a\bigstar b$ solves $F_{i,j}$. For each $H$, we set $u_0= u_0(H) = \delta_H((0,0),a)$. If $|a| = n$, then we take $N = n+i$ and note that by triangle-inequality we get $d_H(u_0,v) \le N$ for all $(H,v) \in X_{i,j}$. It follows by Lemma~\ref{rough moving v2} that there exists some $b_1 \in S^*$ such that for all $H$, letting $\Solve_H$ be the vertices $v \in V(H)$ such that $b_1$ solves $M_{H,u_0,v}$, we get   \begin{align*}
+        \delta_H(a\bigstar b_1,(0,0)) = \delta_H(u_0,b_1) = u_1\textrm{ where }x_{u_1} &\ge \sup_{v\not \in \Solve_H(u_0,a): d_H(u_0,v)\le N}\{x_v\} \\&\ge  \sup_{v\not \in \Solve_H:(v,H) \in X_{i,j}} \{x_v\}.\tag{1b}\\
+    \end{align*}
+    We set $X'_{i,j} = \{(H,v)\in X_{i,j}: v \not\in\Solve_H\}$, which corresponds to the mazes $M_{H,v}$ that $a\bigstar b_1$ does not necessarily solve.
+    
+    Next, for each $H$, we set $u_1 = u_1(H) =\delta_H((0,0),a\bigstar b_0)$. Again applying triangle inequality we get that for all $(H,v) \in X_{i,j}$, that $d(u_1,v) \le |a\bigstar b_1| +i =: D$ for some finite $D\ge 0$, as both $a$ and $b_1$ are finite. It is clear that for any $H$, all paths of length $\ell$ starting at $u_1$ are contained in $H_{x_{u_1}-\ell,x_{u_1}+\ell}$. It then follows that for each $(H,v) \in X_{i,j}$ that $u_1$ and $v$ are connected in $H_{x_{u_1}-D,x_{u_1}+D}$. Meanwhile, by $(1b)$, we also have that for $(H,v) \in X'_{i,j}$ that $x_{u_1} \ge x_v$. Lastly, we observe that $(H,v) \in X_{i,j} \implies y_v = j$. 
+    Hence, by Lemma~\ref{fine moving}, taking $y = j$, $n = x_{u_1}-D\le m = x_{u_1}+D$ we have that there exists a finite $b_2 \in S^*$ $d_H(u_1,v)$ which will solve $M_{H,u_1,v}$ for each $(H,v) \in X'_{i,j}$. It follows that $a \bigstar b_1\bigstar b_2$ solves $F_{i,j}$ as desired, with $b_1\bigstar b_2$ being finite. Hence, by Remark~\ref{fstrat}, we are done.
+\end{proof}
+\end{thm}
+
+\section{Chickenscratch} \label{cs}
+\begin{proof}[Beginning of a proof of Lemma~\ref*{rough moving v2}]
+    We proceed by induction, and shall in fact prove a slightly stronger statement. Specifically, our inductive hypothesis is this: for each $N\ge 1$, there exists a finite word $a = a(N) \in S^*$ that satisfies the following: 
+    For $H\in \mathcal{H}$, and any $u \in V(H)$, let $x''$ be largest $x$-coordinate over all vertices such that $d_H(u,v)\le N$. If there exists $v \in V(H)$ so that $x_v > x''$, then $x_{\delta_H(u,a)} \ge x''$. Otherwise, we must have $x_{\delta_H(u,a)} \ge x''-1$, and for all $(x',y') \in V(H)$, we must have $x' >x_{\delta_H(u,a)}$ implies that $a$ solves $H_{H,u,(x',y')}$. (we note in the second case, that $x_{\delta_H(u,a)}\ge x''-1$ implies that the $x$-coordinate of $\delta_H(u,a)$ is at least the second largest $x$-coordinate achieved in $H$, which we call the second-case-property for short)
+    
+    
+    For $N = 1$, we have that $a(1) = R$ suffices. Now, given that there exists $a = a(N)$ satisfying our inductive hypothesis for the case of $N$, we wish to show this extends to the case of $N+1$. We consider some choice of $H\in \mathcal{H},u \in V(H)$, letting $x''$ be largest $x$-coordinate over all vertices such that $d_H(u,v)\le N+1$.
+    
+    
+    
+    Case 1: there exists $w \in V(H)$ such that $x_w > x''$.
+    
+    We set $a^1 = a(N)$ and recursively define $a^{i+1} = a^i\bigstar a^1$. We then consider $v = \delta_H(u,a^{N+1})$. If $x_v \ge x_u + N+1$, we are done, by the simple upper bound that $d_H(u,(x',y')) \ge |x_u-x'|+|y_u-y'|$ as then we have $x' > x_v \implies d_H(u,(x',y'))\ge 1+|x_v-x_u| \ge N+2$. Otherwise, by pigeonhole principal, we must have that $\Delta_i := x_{\delta_H(u,a^{i+1})}-x_{\delta_H(u,a^i)}<1$ for some $0\le i\le N$.
+    
+    By the statement of our hypothesis, if $\Delta_i < 0$ for some $i$, then $\delta_H(u,a^{i+1})$ has the second-case-property, meaning $x_{\delta_H(u,a^{i+1})}\ge x_w-1 \ge x''$. It should then follow that the second-case property should always hold going forward, giving our desired inequality. Hence, we are left to consider when we have $\Delta_i = 0$ for some $i$... 
+\end{proof}
+\section{Random Analogue}
+
+\begin{defn}
+    We say a word $a$ solves the $r$-ball of a family of graphs $\mathcal{H}$ starting at $u$, if $a$ solves $\{M_{H,u,v}: H\in \mathcal{H}, v\in V(H) \textrm{ s.t. } d_H(u,v)\le r\}$. 
+\end{defn}
+
+\begin{que}
+    Under what conditions does a random walk solving $\mathcal{H}$ with probability 1 imply that for all $d$, that with a random walk will solve $\{M_{H,v}: H\in\mathcal{H},d_H(0,v) \le d\}$ with probability 1.
+\end{que}
+By Remark 3.3 of the other constructive paper:
+\begin{rmk}
+    For each $H$, we can associate an indicator function $f_H:e\mapsto \chi_{E(H)}(e)$. We then get a compact metric space by equipping the set of functions $f_H$ with the product topology. For a family of graphs $\mathcal{H}$ such that for all paths, $p$, the set $S_p:=\{f_H:p\le H \in \mathcal{H}\}$ is compact, then if there exists $a \in S^\infty$ which solves $\mathcal{H}$, then for every $r$ there exists a finite prefix $a'$ of $a$ which solves the $r$-ball of $\mathcal{H}$. (we will call this property of a family path-compactness)
+\end{rmk}
+
+\begin{rmk} If there exists a countable partition $\mathcal{F} = K \cup \bigcap_{i=1}^\infty F_i$ such that for each $F_i$ and $a \in S^*$ there exists $b= b(a,i) \in S^*$ such that $a\bigstar b$ solves $F_i$, and $K$ is a path compact family of graphs (in the sense of the previous remark) which can be solved by $a \in S^\infty$, then there exists $a' \in S^\infty$ so that $a'$ solves $\mathcal{F}$.
+\end{rmk}
+
+\section{}
+
+\end{document}
