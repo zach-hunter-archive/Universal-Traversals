@@ -30,6 +30,7 @@
 \DeclareMathOperator{\tr}{tr}
 \DeclareMathOperator{\Int}{int}
 \DeclareMathOperator{\Res}{Res}
+\DeclareMathOperator{\supp}{Supp}
 
 \hypersetup{
     colorlinks=true,
@@ -282,6 +283,40 @@ By Remark 3.3 of the other constructive paper:
 \begin{rmk} If there exists a countable partition $\mathcal{F} = K \cup \bigcap_{i=1}^\infty F_i$ such that for each $F_i$ and $a \in S^*$ there exists $b= b(a,i) \in S^*$ such that $a\bigstar b$ solves $F_i$, and $K$ is a path compact family of graphs (in the sense of the previous remark) which can be solved by $a \in S^\infty$, then there exists $a' \in S^\infty$ so that $a'$ solves $\mathcal{F}$.
 \end{rmk}
 
-\section{}
+\section{Further Questions}
+
+\begin{defn}
+    For a set $T \subset \Bbb{Z}$, we denote $\ell(T)$ as the set of all labelings, $f:\Bbb{Z}\to T$. 
+\end{defn}
+
+Given a labeling $f: \Bbb{Z}\to \Bbb{Z}$, we may define a walk, $w_0,\dots $, along $\Bbb{Z}$ for words $a \in \{L,R,M\}^\infty$, such that $w_0 =0$, and \[\begin{cases}w_{i+1} = w_i -1& \text{if } a_i = L\\ w_{i+1} = w_i +1& \text{if } a_i = R\\w_{i+1} = w_i +f(w_i)& \text{if } a_i = M.\\\end{cases}\]We say a word $a \in \{L,R,M\}^\infty$ solves a labelling $f$ if for each $n \in \Bbb{Z}$, there exists some $t$ such that $w_t = n$ and $a_t = n$. One may think of letter $M$ being the action of marking a vertex. We would like to mark all the vertices of $\Bbb{Z}$, but doing so affects our location, depending upon the labelling $f$.
+
+\begin{que}
+    For each finite $T$, does there exist a word $a \in \{L,R,M\}^\infty$ such that $a$ solves each $f \in \ell(T)$?
+\end{que}
+
+The motivation for this is as follows. Consider a graph $H$ formed by infinite horizontal line $\Bbb{Z}\times \{0\}$ and for each $n\in \Bbb{Z}$ we glued a finite graph $H_n$ to $(n,0)$. Lets assume that the graphs $H_n$ do not get arbitrarily large, and were disjoint. The family of graphs $H$ created in this way would be a nice case to handle. If the above holds true, we should (probably) get this as follows. 
+
+For a specific $H$, if the graphs $H_n$ do not get arbitrarily large, there are finitely many such graphs in the set $G_H :=\{H_n:n \in \Bbb{Z}\}$. There should then exist a universal finite word, $b \in S^*$, which, starting at $(n,0)$ should fully explore any $G \in G_H$ glued to $(n,0)$ and ends us up at another point at the line, say $(n+i,0)$.* Here, because $b$ is finite, $i$ should be a function of structure of $H$ locally around $(n,0)$, meaning there are finite many offsets $i$ that can occur. This corresponds to a labeling $f:n\mapsto i$ with finite image. We can then use the universal word which solves all $f \in \ell(T)$ to fully explore the line and all the graphs glued to it, which would work for all $H'$ where $G_{H'} \subseteq G_H$. Combining this with Remark~\ref{fstrat}, and increasing sequence of finite graphs $G_i$ whose limit is the set of all finite graphs, we get our result. 
+
+*Here is the only part I am not 100 percent certain of. While there definitely exists a universal word that explores any glue graph $G\i G_H$ and then exits, it may take a little work to make sure that we end at the line, and don't get into some other neighboring graph and stick inside  there.
+
+Also, the current partial results we have come up with (including some which are not document) seem to boil down to a clever application of solving all $f\in \ell(\{0,1\})$ and then applying Remark~\ref{fstrat}, so this problem seems quite relevant in this regard to. 
+
+We note without proof that if there is a word solving $\ell(T)$, then there is a word solving $\ell(T+k)$ and $\ell(Tk)$ for $k \neq 0$.(using typical sumset/product set definitions. Here is the smallest problem we don't know how to prove:
+
+\begin{que}
+    Does there exist a word $a \in \{L,R,M\}^\infty$ such that $a$ solves each $f \in \ell(\{-1,0,1\})$?
+\end{que}
+
+We believe it may be sufficient to consider the following variant of random walk. We choose $s_i$ uniformly from random from $\{L,R\}$, and $X_i$ uniformly at random from $\{1, \dots , g(i)\}$ for some function $g:\Bbb{N} \to \Bbb{N}$ such that $g(n)\to \infty$ as $n\to \infty$ and $\sum_{n=1}^\infty \frac{1}{g(n)} = \infty$. Then, with the correct choice of $g$, letting $a_1 = s_1^{X_1}, a_{i+1} = a_i\bigstar M\bigstar s_i^{X_i}$, and $a$ be the direct limit of this sequence, that almost surely $a$ solves all $f \in \ell(\{-1,0,1\})$. Perhaps we may even get that this construction for random words almost surely solves all $f \in \ell(T)$ for finite $T$.
+
+We also are curious about using such words to potentially produce words which solve all subgraphs of $\Bbb{Z}^2$. (here of course we remove all the instances of $M$ and sample $s_i$ uniformly from $\{L,R,U,D\}$)
+
+Even easier problem I'm still not quite sure how to prove:
+
+\begin{que}
+    Does there exist a word $a \in \{L,R,M\}^\infty$ such that $a$ solves each $f \in \ell(\{-1,0,1\})$ such that $\supp(f)\subseteq \{2^n:n \in \Bbb{N}\}$?
+\end{que}
 
 \end{document}
